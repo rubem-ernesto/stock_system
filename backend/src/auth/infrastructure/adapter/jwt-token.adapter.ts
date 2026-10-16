@@ -10,7 +10,7 @@ export class JwtTokenAdapter implements TokenPort {
 
   constructor(private readonly configService: ConfigService) {
     this.accessSecret = this.configService.getOrThrow<string>("ACCESS_TOKEN_SECRET")
-    this.refreshSecret = this.configService.getOrThrow<string>("REFRESH_TOKEN_SCRET")
+    this.refreshSecret = this.configService.getOrThrow<string>("REFRESH_TOKEN_SECRET")
   }
 
   genToken<T extends object>(payload: T, tokenType: "ACCESS_TOKEN" | "REFRESH_TOKEN" = "ACCESS_TOKEN", expiresIn: number): string {

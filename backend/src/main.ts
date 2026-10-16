@@ -42,8 +42,9 @@ async function bootstrap() {
     "/docs",
     apiReference({
       theme: "elysiajs",
-      content: document,
-      showDeveloperTools: "localhost",
+      spec: {
+        content: document,
+      },
       defaultHttpClient: {
         targetKey: "js",
         clientKey: "fetch",

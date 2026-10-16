@@ -3,7 +3,7 @@ import { UseCasePort } from "@shared/application/ports/use-case.port"
 import { IdVO } from "@shared/domain/value-objects/id.vo"
 import { NameVO } from "src/workspace/domain/value-objects/name.vo"
 import { Workspace, workspaceStatus } from "src/workspace/domain/entities/workspace.entity"
-import { WorkspaceRepositoryPort } from "../ports/workspace-repository.port"
+import { WORKSPACE_REPOSITORY_PORT, WorkspaceRepositoryPort } from "../ports/workspace-repository.port"
 
 export interface createWorkspaceInput {
   name: NameVO
@@ -15,7 +15,10 @@ export interface createWorkspaceInput {
 
 @Injectable()
 export class CreateWorkspaceUseCase implements UseCasePort<createWorkspaceInput, Workspace> {
-  constructor(@Inject() private readonly workspaceRepository: WorkspaceRepositoryPort) {}
+  constructor(
+    @Inject(WORKSPACE_REPOSITORY_PORT)
+    private readonly workspaceRepository: WorkspaceRepositoryPort,
+  ) {}
 
   public async execute(input: createWorkspaceInput): Promise<Workspace> {
     const workspacesFromOwner = await this.workspaceRepository.findByOwner(input.ownerId)

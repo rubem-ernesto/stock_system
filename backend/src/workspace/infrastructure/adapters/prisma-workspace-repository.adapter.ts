@@ -19,6 +19,8 @@ export class PrismaWorkspaceRepositoryAdapter implements WorkspaceRepositoryPort
         id: workspace.getPrimiteProps().id,
         ownerId: workspace.getPrimiteProps().ownerId,
         planId: workspace.getPrimiteProps().planId,
+        description: workspace.getPrimiteProps().description,
+        status: workspace.getPrimiteProps().status,
       },
     })
 
@@ -48,7 +50,7 @@ export class PrismaWorkspaceRepositoryAdapter implements WorkspaceRepositoryPort
 
   public async findByOwner(ownerId: IdVO): Promise<Workspace[]> {
     const workspaces = await this.prisma.workspace.findMany({
-      where: {},
+      where: { ownerId: ownerId.get(), status: "ACTIVE" },
     })
 
     return workspaces.map((workspace) => this.restoreWorkSpace(workspace))
@@ -56,7 +58,7 @@ export class PrismaWorkspaceRepositoryAdapter implements WorkspaceRepositoryPort
 
   public async findMany(lastId?: string, limit?: number, slugFilter?: string, nameFilter?: string): Promise<Workspace[]> {
     const whereConfig = {
-      //status: "ACTIVE" as const,
+      status: "ACTIVE" as const,
       ...(slugFilter && {
         slug: { contains: slugFilter, mode: "insensitive" as const },
       }),
@@ -82,7 +84,7 @@ export class PrismaWorkspaceRepositoryAdapter implements WorkspaceRepositoryPort
 
     const workspaces = await this.prisma.workspace.findMany({
       where: whereConfig,
-      take: limit || 10,
+      take: limit || 15,
       ...(validCursor && {
         skip: 1,
         cursor: validCursor,

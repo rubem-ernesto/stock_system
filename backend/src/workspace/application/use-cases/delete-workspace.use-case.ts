@@ -12,12 +12,12 @@ export interface DeleteWorkspaceInput {
 export class DeleteWorkspaceUseCase implements UseCasePort<DeleteWorkspaceInput, void> {
     constructor(@Inject(WORKSPACE_REPOSITORY_PORT) private readonly  workspaceReposistory: WorkspaceRepositoryPort) {}
 
-    public async execute(input: DeleteWorkspaceInput):  Promise<void> {
-        const workspace = await this.workspaceReposistory.findByUnique({id: input.workspaceId.get()})
+    public async execute(input: DeleteWorkspaceInput): Promise<void> {
+        const workspace = await this.workspaceReposistory.findByUnique({ id: input.workspaceId.get() })
 
         if(!workspace) throw new HttpException('Workspace não encontrdo', HttpStatus.NOT_FOUND)
-        if(input.requesterId != workspace.getProps().ownerId) throw new HttpException("Não podes apagar este workspace", HttpStatus.FORBIDDEN)
+        if(!input.requesterId.equals(workspace.getProps().ownerId)) throw new HttpException("Não podes apagar este workspace", HttpStatus.FORBIDDEN)
 
-        const isDeleted = await this.workspaceReposistory.delete(input.workspaceId)
+        await this.workspaceReposistory.delete(input.workspaceId)
     }
 }

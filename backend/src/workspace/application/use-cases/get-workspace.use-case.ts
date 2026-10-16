@@ -1,6 +1,6 @@
 import { UseCasePort } from "@shared/application/ports/use-case.port"
 import { WORKSPACE_REPOSITORY_PORT, WorkspaceRepositoryPort, WorkspaceSelectors } from "../ports/workspace-repository.port"
-import { HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common"
+import { BadRequestException, HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common"
 import { Workspace } from "src/workspace/domain/entities/workspace.entity"
 
 export type GetWorkspaceInput = WorkspaceSelectors
@@ -13,6 +13,9 @@ export class GetWorkspaceUseCase implements UseCasePort<GetWorkspaceInput, Works
   ) {}
 
   public async execute(input: WorkspaceSelectors): Promise<Workspace> {
+    if (!input.id && !input.slug) {
+      throw new BadRequestException("Informe o identificador ou slug do workspace.")
+    }
     const workspace = await this.workspaceRepo.findByUnique(input)
     if (!workspace) throw new HttpException("Workspace não encontrado", HttpStatus.NOT_FOUND)
     return workspace
