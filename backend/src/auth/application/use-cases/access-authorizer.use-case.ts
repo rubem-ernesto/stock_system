@@ -37,7 +37,7 @@ export class AccessAuthorizerUseCase
 
         const payload: any = result.payload;
 
-        const user = await this.userRepository.findById(payload.sub);
+        const user = await this.userRepository.findById(new IdVO(payload.sub));
 
         if (!user || user.getProps().deletedAt) {
             throw new UnauthorizedException('Este usuário foi apagado ou não está ativo.');

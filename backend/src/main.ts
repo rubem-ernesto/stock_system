@@ -41,7 +41,7 @@ async function bootstrap() {
   app.use(
     "/docs",
     apiReference({
-      theme: "elysiajs",
+      theme: "default",
       spec: {
         content: document,
       },
